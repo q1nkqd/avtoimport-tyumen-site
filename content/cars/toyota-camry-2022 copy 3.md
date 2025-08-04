@@ -9,7 +9,7 @@ mileage: "15,000"
 color: "Белый"
 images:
   - "/images/cars/toyota-camry-2022-1.png"
-  - "/images/cars/toyota-camry-2022-2.jpg"
+  - "/images/cars/2.png"
   - "/images/cars/toyota-camry-2022-3.jpg"
 date: 2024-01-15
 ---
