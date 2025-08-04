@@ -1,5 +1,6 @@
 languageCode: 'ru-ru'
 title: 'АвтоИмпортРу'
+canonifyURLs: true
 
 params:
   logoWhite: '/images/logo.svg'
