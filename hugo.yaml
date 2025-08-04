@@ -1,0 +1,32 @@
+languageCode: 'ru-ru'
+title: 'АвтоИмпортРу'
+
+params:
+  logoWhite: '/images/logo.svg'
+  logoBlack: '/images/logo-black.svg'
+
+  description: 'Импорт автомобилей ниже рыночной стоимости'
+  phone: '+7 (999) 123-45-67'
+  email: 'info@avtoimport.ru'
+
+  telegram: 'https://t.me/Nisakoo'
+  # whatsapp: 'https://whatsapp'
+  vk: 'https://vk.com/nikb19'
+
+  address: 'За автомойкой за ТЦ Вояж'
+  # mapLink: ''
+
+menu:
+  main:
+    - name: 'Главная'
+      url: '/'
+      weight: 1
+    - name: 'Отзывы'
+      url: '#reviews'
+      weight: 2
+    - name: 'Контакты'
+      url: '#contacts'
+      weight: 3
+    - name: 'Каталог'
+      url: '/cars/'
+      weight: 4

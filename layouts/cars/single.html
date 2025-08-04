@@ -1,0 +1,236 @@
+{{ define "main" }}
+<div class="car-single-page">
+
+  <div class="container py-4">
+    <div class="row g-4">
+
+      <!-- Левая колонка - Основной контент -->
+      <div class="col-lg-8">
+
+        <!-- Заголовок автомобиля -->
+        <div class="car-header mb-4">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+            <div>
+              <h1 class="fw-bold text-dark mb-2">{{ .Title }}</h1>
+
+              <div class="car-meta d-flex flex-wrap gap-3 text-muted">
+                {{ if .Params.location }}
+                <span>
+                  <i class="bi bi-geo-alt me-1 text-danger"></i>{{ .Params.location }}
+                </span>
+                {{ end }}
+
+                <span>
+                  <i class="bi bi-calendar3 me-1 text-danger"></i>{{ .Date.Format "02.01.2006" }}
+                </span>
+
+                {{ if .Params.status }}
+                <span class="badge bg-success rounded-pill">{{ .Params.status }}</span>
+                {{ end }}
+              </div>
+            </div>
+
+            <div class="price-block text-end">
+              <div class="price-label small text-muted mb-1">Цена</div>
+              <div class="price-value display-5 fw-bold text-danger">{{ .Params.price }} ₽</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Галерея изображений -->
+        {{ if .Params.images }}
+        <div class="car-gallery mb-4">
+          <div class="main-image-container rounded-4 overflow-hidden shadow-sm mb-3">
+            <img src="{{ index .Params.images 0 }}"
+                 class="main-car-image w-100"
+                 alt="{{ .Title }}"
+                 id="mainCarImage"
+                 style="height: 400px; object-fit: cover; cursor: pointer;"
+                 data-bs-toggle="modal"
+                 data-bs-target="#imageModal">
+          </div>
+
+          {{ if gt (len .Params.images) 1 }}
+          <div class="thumbnails-grid">
+            <div class="row g-2">
+              {{ range $index, $image := .Params.images }}
+              <div class="col-3 col-sm-2">
+                <img src="{{ $image }}"
+                     class="thumbnail-image w-100 rounded-3 shadow-sm"
+                     alt="{{ $.Title }}"
+                     style="height: 60px; object-fit: cover; cursor: pointer;"
+                     onclick="changeMainImage('{{ $image }}')"
+                     data-bs-toggle="modal"
+                     data-bs-target="#imageModal"
+                     data-image="{{ $image }}">
+              </div>
+              {{ end }}
+            </div>
+          </div>
+          {{ end }}
+        </div>
+        {{ end }}
+
+        <!-- Описание -->
+        <div class="car-description bg-white rounded-4 shadow-sm p-4">
+          <div class="section-header mb-3">
+            <h3 class="fw-semibold text-dark mb-1">Описание автомобиля</h3>
+            <div class="section-line bg-danger"></div>
+          </div>
+
+          <div class="content-text">
+            {{ .Content }}
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Правая колонка - боковая панель -->
+      <div class="col-lg-4 sidebar-wrapper">
+
+        <!-- Контакты - статичный блок вверху -->
+        <div class="contact-section">
+          <div class="section-header mb-3">
+            <h4 class="fw-semibold text-dark mb-1">
+              <i class="bi bi-chat-dots text-danger me-2"></i>Связаться с нами
+            </h4>
+            <div class="section-line bg-danger"></div>
+          </div>
+
+          <div class="contact-content text-center">
+            <p class="text-muted mb-3">Заинтересованы в этом автомобиле?</p>
+
+            <div class="contact-buttons d-grid gap-2">
+              {{ with .Site.Params.phone }}
+              <a href="tel:{{ . }}"
+                 class="btn btn-danger btn-lg rounded-pill">
+                <i class="bi bi-telephone-fill me-2"></i>{{ . }}
+              </a>
+              {{ end }}
+
+              {{ with .Site.Params.email }}
+              <a href="mailto:{{ . }}"
+                 class="btn btn-outline-dark rounded-pill">
+                <i class="bi bi-envelope me-2"></i>{{ . }}
+              </a>
+              {{ end }}
+
+              {{ with .Site.Params.telegram }}
+              <a href="{{ . }}"
+                  class="btn btn-primary rounded-pill"
+                  target="_blank"
+                  aria-label="Telegram">
+                  <i class="bi bi-telegram"></i>
+              </a>
+              {{ end }}
+
+              {{ with .Site.Params.whatsapp }}
+              <a href="{{ . }}"
+                  class="btn btn-success rounded-pill"
+                  target="_blank"
+                  aria-label="WhatsApp">
+                  <i class="bi bi-whatsapp"></i>
+              </a>
+              {{ end }}
+
+              {{ with .Site.Params.vk }}
+              <a href="{{ . }}"
+                  class="btn btn-primary rounded-pill"
+                  target="_blank"
+                  aria-label="VKontakte">
+                  <b>ВК</b>
+              </a>
+              {{ end }}
+            </div>
+
+            <div class="guarantee-note mt-3 pt-3 border-top">
+              <small class="text-muted d-flex align-items-center justify-content-center">
+                <i class="bi bi-shield-check text-success me-2"></i>
+                Полное юридическое сопровождение
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Характеристики - sticky блок -->
+        <div class="specifications">
+          <div class="section-header mb-3">
+            <h4 class="fw-semibold text-dark mb-1">
+              <i class="bi bi-gear text-danger me-2"></i>Характеристики
+            </h4>
+            <div class="section-line bg-danger"></div>
+          </div>
+
+          <div class="specs-list">
+            {{ if .Params.year }}
+            <div class="spec-item">
+              <span class="spec-label">Год выпуска</span>
+              <span class="spec-value">{{ .Params.year }}</span>
+            </div>
+            {{ end }}
+
+            {{ if .Params.engine }}
+            <div class="spec-item">
+              <span class="spec-label">Двигатель</span>
+              <span class="spec-value">{{ .Params.engine }}</span>
+            </div>
+            {{ end }}
+
+            {{ if .Params.transmission }}
+            <div class="spec-item">
+              <span class="spec-label">КПП</span>
+              <span class="spec-value">{{ .Params.transmission }}</span>
+            </div>
+            {{ end }}
+
+            {{ if .Params.drive }}
+            <div class="spec-item">
+              <span class="spec-label">Привод</span>
+              <span class="spec-value">{{ .Params.drive }}</span>
+            </div>
+            {{ end }}
+
+            {{ if .Params.mileage }}
+            <div class="spec-item">
+              <span class="spec-label">Пробег</span>
+              <span class="spec-value">{{ .Params.mileage }} км</span>
+            </div>
+            {{ end }}
+
+            {{ if .Params.color }}
+            <div class="spec-item">
+              <span class="spec-label">Цвет</span>
+              <span class="spec-value">{{ .Params.color }}</span>
+            </div>
+            {{ end }}
+
+            {{ if .Params.fuel }}
+            <div class="spec-item">
+              <span class="spec-label">Топливо</span>
+              <span class="spec-value">{{ .Params.fuel }}</span>
+            </div>
+            {{ end }}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно для изображений -->
+  {{ if .Params.images }}
+  <div class="modal fade" id="imageModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content bg-transparent border-0">
+        <div class="modal-body p-0 position-relative">
+          <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3 z-3"
+                  data-bs-dismiss="modal" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));"></button>
+          <img src="" class="modal-car-image w-100 rounded-4" alt="{{ .Title }}" id="modalImage">
+        </div>
+      </div>
+    </div>
+  </div>
+  {{ end }}
+
+</div>
+{{ end }}

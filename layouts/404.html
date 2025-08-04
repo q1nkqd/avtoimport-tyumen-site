@@ -1,0 +1,24 @@
+{{ define "main" }}
+<div class="error-page-simple">
+  <div class="container">
+    <div class="row justify-content-center align-items-center min-vh-100">
+      <div class="col-lg-6 col-md-8 text-center">
+
+        <!-- 404 Number -->
+        <div class="error-number mb-4">
+          <span class="display-1 fw-bold text-danger">404</span>
+        </div>
+
+        <!-- Error Message -->
+        <h1 class="error-title mb-4">Страница не найдена</h1>
+
+        <!-- Back Button -->
+        <a href="{{ "/" | relURL }}" class="btn btn-danger btn-lg rounded-pill px-5">
+          <i class="bi bi-arrow-left me-2"></i>На главную
+        </a>
+
+      </div>
+    </div>
+  </div>
+</div>
+{{ end }}

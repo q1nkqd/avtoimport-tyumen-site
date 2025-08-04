@@ -1,0 +1,100 @@
+{{/*
+Параметры, передаваемые через dict:
+  car   — .Page автомобиля (обязательно)
+*/}}
+
+{{ $car := .car }}
+
+<div class="col-lg-4 col-md-6"
+     data-year="{{ $car.Params.year | default 0 }}"
+     data-price='{{ $car.Params.price | default 0 | replaceRE "[^0-9]" "" }}'
+     data-title="{{ $car.Title | lower }}">
+
+  <div class="car-card position-relative">
+    <!-- Основная карточка -->
+    <div class="card h-100 border-0 bg-white shadow-sm">
+
+      <!-- Изображение с градиентом -->
+      {{ if $car.Params.images }}
+      <div class="image-container position-relative overflow-hidden">
+        <img src="{{ index $car.Params.images 0 }}"
+             class="card-img-top"
+             alt="{{ $car.Title }}"
+             style="height: 260px; object-fit: cover;">
+
+        <!-- Тонкий градиент снизу для лучшей читаемости -->
+        <div class="image-gradient position-absolute bottom-0 w-100"
+             style="height: 60px; background: linear-gradient(transparent, rgba(0,0,0,0.3));"></div>
+
+        <!-- Статус в верхнем левом углу -->
+        {{ if $car.Params.status }}
+        <span class="status-badge position-absolute top-0 start-0 m-3">
+          {{ $car.Params.status }}
+        </span>
+        {{ end }}
+
+        <!-- Год в правом верхнем углу -->
+        {{ if $car.Params.year }}
+        <span class="year-badge position-absolute top-0 end-0 m-3">
+          {{ $car.Params.year }}
+        </span>
+        {{ end }}
+      </div>
+      {{ else }}
+      <!-- Заглушка без изображения -->
+      <div class="no-image d-flex align-items-center justify-content-center bg-light" style="height: 260px;">
+        <i class="bi bi-car-front text-muted" style="font-size: 2.5rem;"></i>
+      </div>
+      {{ end }}
+
+      <!-- Содержимое -->
+      <div class="card-body p-4">
+
+        <!-- Заголовок -->
+        <h5 class="card-title mb-3 fw-bold text-dark lh-sm">
+          {{ $car.Title }}
+        </h5>
+
+        <!-- Цена -->
+        <div class="price-section mb-4">
+          <div class="price text-danger fw-bold fs-4 mb-1">
+            {{ $car.Params.price }} ₽
+          </div>
+          {{ if $car.Params.location }}
+          <div class="location text-muted small">
+            <i class="bi bi-geo-alt me-1"></i>{{ $car.Params.location }}
+          </div>
+          {{ end }}
+        </div>
+
+        <!-- Характеристики - только самые важные -->
+        <div class="specs mb-4">
+          {{ if $car.Params.engine }}
+          <div class="spec-item">
+            <span class="spec-label">Двигатель:</span>
+            <span class="spec-value">{{ $car.Params.engine }}</span>
+          </div>
+          {{ end }}
+
+          {{ if $car.Params.mileage }}
+          <div class="spec-item">
+            <span class="spec-label">Пробег:</span>
+            <span class="spec-value">{{ $car.Params.mileage }} км</span>
+          </div>
+          {{ end }}
+
+          {{ if $car.Params.transmission }}
+          <div class="spec-item">
+            <span class="spec-label">КПП:</span>
+            <span class="spec-value">{{ $car.Params.transmission }}</span>
+          </div>
+          {{ end }}
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Невидимая ссылка для клика по всей карточке -->
+    <a href="{{ $car.Permalink }}" class="stretched-link" aria-label="Подробнее о {{ $car.Title }}"></a>
+  </div>
+</div>

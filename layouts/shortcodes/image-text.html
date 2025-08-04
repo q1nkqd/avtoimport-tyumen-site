@@ -1,0 +1,75 @@
+{{/*
+Shortcode: image-text
+Универсальный блок с изображением и текстом
+
+Параметры:
+  image      – путь к изображению (обязательно)
+  alt        – alt-текст для изображения (по умолчанию "Изображение")
+  title      – заголовок (опционально)
+  right      – true/false, изображение справа (по умолчанию false)
+  imageWidth – ширина колонки изображения (по умолчанию 5)
+  textWidth  – ширина колонки текста (по умолчанию 7)
+  hideMobile – true/false, скрывать изображение на мобильных (по умолчанию false)
+  bg         – фоновый цвет: light, dark, transparent (по умолчанию transparent)
+*/}}
+
+{{ $right      := eq (.Get "right") "false" }}
+{{ $imageWidth := .Get "imageWidth" | default "5" }}
+{{ $textWidth  := .Get "textWidth"  | default "7" }}
+{{ $hideMobile := eq (.Get "hideMobile") "true" }}
+{{ $bg         := .Get "bg" | default "transparent" }}
+
+<!-- Контейнер с фоном -->
+<section class="py-5 {{ if eq $bg "light" }}bg-light{{ else if eq $bg "dark" }}bg-dark text-white{{ end }}">
+  <div class="container">
+    <div class="row align-items-center g-4">
+
+      <!-- Изображение слева или справа -->
+      <div class="col-md-{{ $imageWidth }} {{ if $hideMobile }}d-none d-md-block{{ end }} {{ if $right }}order-md-2{{ else }}order-md-1{{ end }}">
+        <div class="image-wrapper position-relative overflow-hidden rounded-4 shadow">
+          <img src="{{ .Get "image" }}"
+               alt="{{ .Get "alt" | default "Изображение" }}"
+               class="img-fluid w-100 hover-zoom"
+               loading="lazy">
+
+          <!-- Декоративный оверлей -->
+          <div class="image-overlay position-absolute top-0 start-0 w-100 h-100 bg-danger bg-opacity-10 opacity-0 transition-opacity"></div>
+        </div>
+      </div>
+
+      <!-- Текстовая часть -->
+      <div class="col-12 col-md-{{ $textWidth }} {{ if $right }}order-md-1{{ else }}order-md-2{{ end }}">
+        <div class="text-content {{ if $right }}pe-md-5{{ else }}ps-md-5{{ end }}">
+
+          <!-- Заголовок с акцентом -->
+          {{ if .Get "title" }}
+          <div class="title-wrapper mb-4">
+            <div class="accent-line bg-danger mb-3" style="width: 60px; height: 4px; border-radius: 2px;"></div>
+            <h3 class="display-6 fw-bold mb-0 {{ if eq $bg "dark" }}text-white{{ else }}text-dark{{ end }}">
+              {{ .Get "title" }}
+            </h3>
+          </div>
+          {{ end }}
+
+          <!-- Контент -->
+          <div class="content-text {{ if eq $bg "dark" }}text-light{{ else }}text-muted{{ end }} fs-5 lh-lg">
+            {{ .Inner | markdownify }}
+          </div>
+
+          <!-- Дополнительная кнопка (если задан параметр) -->
+          {{ with .Get "btnText" }}
+          <div class="mt-4">
+            <a href="{{ $.Get "btnLink" | default "#" }}"
+               class="btn {{ if eq $bg "dark" }}btn-outline-light{{ else }}btn-primary{{ end }} btn-lg rounded-pill px-4">
+              {{ . }}
+              <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+          </div>
+          {{ end }}
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

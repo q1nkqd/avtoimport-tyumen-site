@@ -1,0 +1,48 @@
+{{/*
+Параметры:
+  limit     – максимальное количество автомобилей (по умолчанию 6)
+  title     – заголовок секции (по умолчанию "Наши автомобили")
+  subtitle  – подзаголовок (опционально)
+  btnText   – текст кнопки (по умолчанию "Смотреть все автомобили")
+  btnLink   – ссылка кнопки (по умолчанию "/cars/")
+  id        – ID секции (по умолчанию "catalog")
+*/}}
+
+{{ $limit := .Get "limit" | default 6 }}
+{{ $title := .Get "title" | default "Наши автомобили" }}
+{{ $btnText := .Get "btnText" | default "Смотреть все автомобили" }}
+{{ $btnLink := .Get "btnLink" | default "/cars/" }}
+{{ $id := .Get "id" | default "catalog" }}
+
+<section class="py-5" id="{{ $id }}">
+  <div class="container">
+
+    <!-- Заголовок секции -->
+    <div class="text-center mb-5">
+      <h2 class="display-4 fw-bold text-dark mb-3">{{ $title }}</h2>
+
+      {{ with .Get "subtitle" }}
+      <p class="lead text-muted mx-auto" style="max-width: 600px;">{{ . }}</p>
+      {{ end }}
+
+      <!-- Декоративная линия -->
+      <div class="title-underline mx-auto bg-danger" style="width: 60px; height: 4px; border-radius: 2px;"></div>
+    </div>
+
+    <!-- Сетка автомобилей: 3 в строку -->
+    <div class="row g-4 mb-5" id="carsGrid">
+      {{ range first $limit (where .Site.RegularPages "Section" "cars") }}
+        {{ partial "car-card.html" (dict "car" .) }}
+      {{ end }}
+    </div>
+
+    <!-- Кнопка "Показать все" -->
+    <div class="text-center">
+      <a href="{{ $btnLink | relURL }}"
+         class="btn btn-danger btn-lg rounded-pill px-5 py-3">
+        <i class="bi bi-grid-3x3-gap me-2"></i>{{ $btnText }}
+      </a>
+    </div>
+
+  </div>
+</section>

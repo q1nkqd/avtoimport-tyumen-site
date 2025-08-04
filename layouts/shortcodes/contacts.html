@@ -1,0 +1,144 @@
+{{/*  ─────────────────────────────────────────────────────────
+     Shortcode: contact-block
+     Показывает секцию контактов с иконками Bootstrap.
+
+  Параметры (все опциональны):
+    title      – заголовок секции (по умолчанию "Контакты")
+    subtitle   - подзаголовок (по умолчанию "Звоните и пишите в любое время с 9:00 до 21:00")
+    phone      – номер телефона (по умолчанию .Site.Params.phone)
+    email      – e-mail          (по умолчанию .Site.Params.email)
+    address    – физический адрес
+    whatsapp   – номер для WhatsApp  (без +)
+    telegram   – username без @
+    mapLink    – ссылка на карту (Яндекс, Google)
+───────────────────────────────────────────────────────── */}}
+
+{{ $title    := .Get "title"    }}
+{{ $subtitle := .Get "subtitle" }}
+{{ $phone    := .Get "phone"    | default .Site.Params.phone }}
+{{ $email    := .Get "email"    | default .Site.Params.email }}
+{{ $address  := .Get "address"  | default .Site.Params.address }}
+{{ $whats    := .Get "whatsapp" | default .Site.Params.whatsapp }}
+{{ $tg       := .Get "telegram" | default .Site.Params.telegram }}
+{{ $vk       := .Get "vk"       | default .Site.Params.vk }}
+{{ $mapLink  := .Get "mapLink"  | default .Site.Params.mapLink }}
+{{ $id       := .Get "id"       | default "contacts" }}
+
+
+<section class="py-5 bg-light" id="{{ $id }}">
+  <div class="container">
+
+    <!-- Заголовок -->
+    <div class="text-center mb-5">
+      <h2 class="display-5 fw-bold text-dark mb-3">{{ $title }}</h2>
+      {{ with $subtitle }}
+      <p class="lead text-muted">{{ . }}</p>
+      {{ end }}
+    </div>
+
+    <!-- Контакты в карточке -->
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="card border-0 shadow-sm rounded-4">
+          <div class="card-body p-5">
+
+            <div class="row g-4">
+
+              <!-- Телефон -->
+              {{ with $phone }}
+              <div class="col-md-6 col-lg-3">
+                <div class="text-center">
+                  <div class="contact-icon bg-danger bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                    <i class="bi bi-telephone-fill text-danger fs-4"></i>
+                  </div>
+                  <h6 class="fw-bold mb-2">Телефон</h6>
+                  <a href="tel:{{ . | plainify }}" class="text-decoration-none text-dark hover-red">
+                    {{ . }}
+                  </a>
+                </div>
+              </div>
+              {{ end }}
+
+              <!-- Email -->
+              {{ with $email }}
+              <div class="col-md-6 col-lg-3">
+                <div class="text-center">
+                  <div class="contact-icon bg-danger bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                    <i class="bi bi-envelope-fill text-danger fs-4"></i>
+                  </div>
+                  <h6 class="fw-bold mb-2">Email</h6>
+                  <a href="mailto:{{ . }}" class="text-decoration-none text-dark hover-red">
+                    {{ . }}
+                  </a>
+                </div>
+              </div>
+              {{ end }}
+
+              <!-- Адрес -->
+              {{ with $address }}
+              <div class="col-md-6 col-lg-3">
+                <div class="text-center">
+                  <div class="contact-icon bg-danger bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                    <i class="bi bi-geo-alt-fill text-danger fs-4"></i>
+                  </div>
+                  <h6 class="fw-bold mb-2">Адрес</h6>
+                  <p class="mb-0 text-dark">{{ . }}</p>
+                  {{ with $mapLink }}
+                  <a href="{{ . }}" target="_blank" class="small text-danger text-decoration-none">
+                    Показать на карте <i class="bi bi-arrow-up-right"></i>
+                  </a>
+                  {{ end }}
+                </div>
+              </div>
+              {{ end }}
+
+              <!-- Мессенджеры -->
+              <div class="col-md-6 col-lg-3">
+                <div class="text-center">
+                  <div class="contact-icon bg-danger bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                    <i class="bi bi-chat-dots-fill text-danger fs-4"></i>
+                  </div>
+                  <h6 class="fw-bold mb-2">Мессенджеры</h6>
+                  <div class="d-flex gap-2 justify-content-center">
+                    {{ with $whats }}
+                    <a href="{{ . }}"
+                       class="btn btn-outline-success btn-sm rounded-pill px-3 py-2"
+                       target="_blank"
+                       title="WhatsApp">
+                      <i class="bi bi-whatsapp"></i>
+                    </a>
+                    {{ end }}
+
+                    {{ with $tg }}
+                    <a href="{{ . }}"
+                       class="btn btn-outline-info btn-sm rounded-pill px-3 py-2"
+                       target="_blank"
+                       title="Telegram">
+                      <i class="bi bi-telegram"></i>
+                    </a>
+                    {{ end }}
+
+                    {{ with $vk }}
+                    <a href="{{ . }}"
+                       class="btn btn-outline-info btn-sm rounded-pill px-3 py-2"
+                       target="_blank"
+                       title="VKontakte">
+                      <b>ВК</b>
+                    </a>
+                    {{ end }}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Разделительная линия -->
+            <hr class="my-4 opacity-25">
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ if .Title }}{{ .Title }} - {{ end }}{{ .Site.Title }}</title>
+    <meta name="description" content="{{ .Description | default .Site.Params.description }}">
+
+    <!-- SEO Meta Tags -->
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="{{ .Site.Title }}">
+    <link rel="canonical" href="{{ .Permalink }}">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="{{ if .Title }}{{ .Title }} - {{ end }}{{ .Site.Title }}">
+    <meta property="og:description" content="{{ .Description | default .Site.Params.description }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ .Permalink }}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <!-- Preload критических ресурсов -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style">
+    <link rel="preload" href="{{ .Site.Params.logoBlack }}" as="image">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ "css/style.css" | relURL }}">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand" href="{{ "/" | relURL }}">
+                <img src="{{ .Site.Params.logoBlack }}"
+                     alt="{{ .Site.Title }}"
+                     height="42"
+                     class="d-inline-block align-text-top">
+            </a>
+
+            <!-- Mobile menu button -->
+            <button class="navbar-toggler border-0"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Navigation menu -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    {{ range .Site.Menus.main }}
+                    <li class="nav-item">
+                        <a class="nav-link fw-medium text-dark px-3"
+                           href="{{ .URL | relURL }}">
+                            {{ .Name }}
+                        </a>
+                    </li>
+                    {{ end }}
+                </ul>
+
+                <!-- Contact button -->
+                <div class="navbar-nav">
+                    <a href="tel:{{ .Site.Params.phone }}"
+                       class="btn btn-danger rounded-pill px-4 py-2 fw-semibold">
+                        <i class="bi bi-telephone-fill me-2"></i>{{ .Site.Params.phone }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="main-content">
+        {{ block "main" . }}{{ end }}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark text-light mt-auto">
+        <div class="container py-5">
+            <div class="row gy-4">
+
+                <!-- Company info -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-brand mb-4">
+                        {{ if .Site.Params.logoWhite }}
+                        <img src="{{ .Site.Params.logoWhite }}"
+                             alt="{{ .Site.Title }}"
+                             height="32"
+                             class="mb-3">
+                        {{ else }}
+                        <h5 class="text-white fw-bold">{{ .Site.Title }}</h5>
+                        {{ end }}
+
+                        <p class="text-light opacity-75 mb-0">
+                            {{ .Site.Params.description }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Quick links -->
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="text-white fw-semibold mb-3">Навигация</h6>
+                    <ul class="list-unstyled">
+                        {{ range .Site.Menus.main }}
+                        <li class="mb-2">
+                            <a href="{{ .URL | relURL }}"
+                               class="text-light opacity-75 text-decoration-none hover-opacity-100">
+                                {{ .Name }}
+                            </a>
+                        </li>
+                        {{ end }}
+                    </ul>
+                </div>
+
+                <!-- Contact info -->
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="text-white fw-semibold mb-3">Контакты</h6>
+                    <div class="contact-info">
+                        {{ with .Site.Params.phone }}
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-telephone-fill text-danger me-3"></i>
+                            <a href="tel:{{ . }}" class="text-light opacity-75 text-decoration-none">{{ . }}</a>
+                        </div>
+                        {{ end }}
+
+                        {{ with .Site.Params.email }}
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-envelope-fill text-danger me-3"></i>
+                            <a href="mailto:{{ . }}" class="text-light opacity-75 text-decoration-none">{{ . }}</a>
+                        </div>
+                        {{ end }}
+
+                        {{ with .Site.Params.address }}
+                        <div class="d-flex align-items-start mb-2">
+                            <i class="bi bi-geo-alt-fill text-danger me-3 mt-1"></i>
+                            <span class="text-light opacity-75">{{ . }}</span>
+                        </div>
+                        {{ end }}
+                    </div>
+                </div>
+
+                <!-- Social links -->
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="text-white fw-semibold mb-3">Мы в сети</h6>
+                    <div class="social-links d-flex gap-3">
+                        {{ with .Site.Params.whatsapp }}
+                        <a href="{{ . }}"
+                           class="btn btn-outline-light btn-sm rounded-circle p-2"
+                           target="_blank"
+                           aria-label="WhatsApp">
+                            <i class="bi bi-whatsapp"></i>
+                        </a>
+                        {{ end }}
+
+                        {{ with .Site.Params.telegram }}
+                        <a href="{{ . }}"
+                           class="btn btn-outline-light btn-sm rounded-circle p-2"
+                           target="_blank"
+                           aria-label="Telegram">
+                            <i class="bi bi-telegram"></i>
+                        </a>
+                        {{ end }}
+
+                        {{ with .Site.Params.vk }}
+                        <a href="{{ . }}"
+                           class="btn btn-outline-light btn-sm rounded-circle p-2"
+                           target="_blank"
+                           aria-label="VKontakte">
+                            <b>ВК</b>
+                        </a>
+                        {{ end }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer bottom -->
+            <hr class="border-secondary my-4">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="text-light opacity-75 mb-0">
+                        &copy; {{ now.Year }} {{ .Site.Title }}. Все права защищены.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ "js/main.js" | relURL }}"></script>
+</body>
+
+</html>

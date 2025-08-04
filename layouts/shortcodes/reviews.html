@@ -1,0 +1,80 @@
+{{/*
+Shortcode: reviews-grid
+Параметры:
+  limit – макс-количество отзывов (по умолчанию 3)
+  title – заголовок секции (по умолчанию "Отзывы клиентов")
+  id    – ID секции (по умолчанию "reviews")
+*/}}
+
+{{ $limit := .Get "limit" | default 3 }}
+{{ $title := .Get "title" | default "Отзывы клиентов" }}
+{{ $id    := .Get "id"    | default "reviews" }}
+
+<section class="py-5 bg-light" id="{{ $id }}">
+  <div class="container">
+
+    <!-- Заголовок -->
+    <div class="text-center mb-5">
+      <h2 class="display-5 fw-bold text-dark mb-3">{{ $title }}</h2>
+      <div class="title-underline mx-auto bg-danger" style="width: 60px; height: 4px; border-radius: 2px;"></div>
+    </div>
+
+    <!-- Сетка отзывов (3 в ряд) -->
+    <div class="row g-4">
+      {{ range first $limit (where .Site.RegularPages "Section" "reviews") }}
+      <div class="col-lg-4">
+        <div class="review-card bg-white rounded-4 shadow-sm h-100">
+          <div class="card-body p-4 text-center d-flex flex-column">
+
+            <!-- Фотография клиента -->
+            {{ with .Params.photo }}
+            <div class="reviewer-photo mb-4">
+              <img src="{{ . }}"
+                   alt="{{ $.Params.name }}"
+                   class="rounded-circle shadow-sm mx-auto"
+                   style="width: 90px; height: 90px; object-fit: cover;">
+            </div>
+            {{ else }}
+            <div class="reviewer-photo mb-4">
+              <div class="bg-light rounded-circle d-flex align-items-center justify-content-center text-muted mx-auto"
+                   style="width: 90px; height: 90px;">
+                <i class="bi bi-person-fill fs-2"></i>
+              </div>
+            </div>
+            {{ end }}
+
+            <!-- Текст отзыва -->
+            <blockquote class="review-text flex-grow-1 mb-4">
+              <p class="text-muted lh-lg fst-italic mb-0">
+                {{ .Summary }}
+              </p>
+            </blockquote>
+
+            <!-- Звёзды рейтинга (если есть) -->
+            {{ with .Params.rating }}
+            <div class="rating mb-3">
+              {{ range seq . }}
+              <i class="bi bi-star-fill text-warning"></i>
+              {{ end }}
+              {{ range seq (sub 5 .) }}
+              <i class="bi bi-star text-muted"></i>
+              {{ end }}
+            </div>
+            {{ end }}
+
+            <!-- Имя клиента внизу -->
+            <div class="reviewer-info mt-auto">
+              <h5 class="fw-bold text-dark mb-0">{{ .Params.name }}</h5>
+              {{ with .Params.position }}
+              <p class="text-muted small mb-0 mt-1">{{ . }}</p>
+              {{ end }}
+            </div>
+
+          </div>
+        </div>
+      </div>
+      {{ end }}
+    </div>
+
+  </div>
+</section>
