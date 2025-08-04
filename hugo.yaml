@@ -11,11 +11,11 @@ params:
   email: 'info@avtoimport.ru'
 
   telegram: 'https://t.me/Nisakoo'
-  # whatsapp: 'https://whatsapp'
-  vk: 'https://vk.com/nikb19'
+  whatsapp: 'https://whatsapp'
+  # vk: 'https://vk.com/nikb19'
 
-  address: 'За автомойкой за ТЦ Вояж'
-  # mapLink: ''
+  address: '​г. Тюмень, Улица Республики, 164 ст2​418 офис; 4 этаж'
+  mapLink: 'https://2gis.ru/tyumen/search/%D0%90%D0%B2%D1%82%D0%BE%D0%B8%D0%BC%D0%BF%D0%BE%D1%80%D1%82/firm/70000001095475298/65.578947%2C57.132121'
 
 menu:
   main:
