@@ -38,38 +38,40 @@
         </div>
 
         <!-- Галерея изображений -->
-        {{ if .Params.images }}
         <div class="car-gallery mb-4">
           <div class="main-image-container rounded-4 overflow-hidden shadow-sm mb-3">
-            <img src="{{ index .Params.images 0 }}"
+            {{ $cover := .Resources.GetMatch (printf "*%s" .Params.cover) }}
+            {{ if $cover }}
+            <img src="{{ $cover.RelPermalink }}"
                  class="main-car-image w-100"
                  alt="{{ .Title }}"
                  id="mainCarImage"
-                 style="height: 400px; object-fit: cover; cursor: pointer;"
+                 style="height: 450px; object-fit: cover; cursor: pointer;"
                  data-bs-toggle="modal"
                  data-bs-target="#imageModal">
+            {{ end }}
           </div>
 
-          {{ if gt (len .Params.images) 1 }}
+          {{ $gallery := .Resources.ByType "image" }}
           <div class="thumbnails-grid">
             <div class="row g-2">
-              {{ range $index, $image := .Params.images }}
-              <div class="col-3 col-sm-2">
-                <img src="{{ $image }}"
-                     class="thumbnail-image w-100 rounded-3 shadow-sm"
-                     alt="{{ $.Title }}"
-                     style="height: 60px; object-fit: cover; cursor: pointer;"
-                     onclick="changeMainImage('{{ $image }}')"
-                     data-bs-toggle="modal"
-                     data-bs-target="#imageModal"
-                     data-image="{{ $image }}">
-              </div>
+              {{ range $i, $image := $gallery }}
+                {{ if ne $image.Name .Params.cover }}  <!-- не дублируем обложку -->
+                <div class="col-3 col-sm-2">
+                  <img src="{{ $image.RelPermalink }}"
+                      class="thumbnail-image w-100 rounded-3 shadow-sm"
+                      alt="{{ $.Title }}"
+                      style="height: 60px; object-fit: cover; cursor: pointer;"
+                      onclick="changeMainImage('{{ $image }}')"
+                      data-bs-toggle="modal"
+                      data-bs-target="#imageModal"
+                      data-image="{{ $image }}">
+                </div>
+                {{ end }}
               {{ end }}
             </div>
           </div>
-          {{ end }}
         </div>
-        {{ end }}
 
         <!-- Описание -->
         <div class="car-description bg-white rounded-4 shadow-sm p-4">
@@ -218,7 +220,6 @@
   </div>
 
   <!-- Модальное окно для изображений -->
-  {{ if .Params.images }}
   <div class="modal fade" id="imageModal" tabindex="-1">
     <div class="modal-dialog modal-xl modal-dialog-centered">
       <div class="modal-content bg-transparent border-0">
@@ -230,7 +231,6 @@
       </div>
     </div>
   </div>
-  {{ end }}
 
 </div>
 {{ end }}
