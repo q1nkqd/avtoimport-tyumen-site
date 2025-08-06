@@ -9,7 +9,7 @@ drive: Полный (4WD)
 mileage: 44,500
 color: Crystal White Pearl
 status: В продаже
-date: 2024-01-15
+date: 2025-07-28
 ---
 
 Авто в родном окрасе, аукционная оценка 4,5 балла
