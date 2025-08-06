@@ -1,15 +1,15 @@
 ---
-title: Toyota Yaris 2022
+title: Toyota Yaris 2021
 cover: титул ярис.jpg
-price: 2 850 000
-year: 2022
-engine: 2.5L
-transmission: Автомат
+price: 945 000
+year: 2021
+engine: 1.5L
+transmission: Вариатор
 drive: Передний
-mileage: 15,000
-color: Белый
+mileage: 18,000
+color: AVANT GARDE BRONZE
 status: В продаже
 date: 2024-01-15
 ---
 
-Все в отличном состоянии
+Авто в родном окрасе, аукционная оценка 4,5 балла
