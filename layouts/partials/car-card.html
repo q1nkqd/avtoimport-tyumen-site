@@ -89,6 +89,13 @@
             <span class="spec-value">{{ $car.Params.transmission }}</span>
           </div>
           {{ end }}
+
+          {{ if $car.Params.equipment }}
+          <div class="spec-item">
+            <span class="spec-label">Комплектация:</span>
+            <span class="spec-value">{{ $car.Params.equipment }}</span>
+          </div>
+          {{ end }}
         </div>
 
       </div>

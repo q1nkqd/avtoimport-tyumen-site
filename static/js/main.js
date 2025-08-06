@@ -327,16 +327,55 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Глобальные переменные для галереи
+let currentImageIndex = 0;
+let galleryImages = [];
+let isModalOpen = false;
+
+// Инициализация галереи изображений
+function initImageGallery() {
+  // Собираем все изображения галереи
+  const mainImage = document.getElementById('mainCarImage');
+  const thumbnails = document.querySelectorAll('.thumbnail-image');
+
+  if (!mainImage) return;
+
+  // Создаем массив всех изображений (главное + миниатюры)
+  galleryImages = [mainImage.src];
+  thumbnails.forEach(thumb => {
+    const imageSrc = thumb.src || thumb.dataset.image;
+    if (imageSrc && !galleryImages.includes(imageSrc)) {
+      galleryImages.push(imageSrc);
+    }
+  });
+
+  // Обновляем счетчики
+  updateImageCounter();
+  updateModalImageCounter();
+
+  // Добавляем обработчики для стрелок
+  setupNavigationArrows();
+
+  // Добавляем обработчики клавиатуры
+  setupKeyboardNavigation();
+
+  // Добавляем touch-события для мобильных
+  setupTouchNavigation();
+
+  // Обработчик модального окна
+  setupModalHandlers();
+}
+
 // Функция смены главного изображения
-function changeMainImage(src) {
+function changeMainImage(src, updateIndex = true) {
   const mainImage = document.getElementById('mainCarImage');
   const modalImage = document.getElementById('modalImage');
 
   if (mainImage) {
-    mainImage.src = src;
     mainImage.style.opacity = '0.8';
 
     setTimeout(() => {
+      mainImage.src = src;
       mainImage.style.transition = 'opacity 0.3s ease';
       mainImage.style.opacity = '1';
     }, 100);
@@ -346,7 +385,22 @@ function changeMainImage(src) {
     modalImage.src = src;
   }
 
+  // Обновляем индекс текущего изображения
+  if (updateIndex) {
+    currentImageIndex = galleryImages.indexOf(src);
+    if (currentImageIndex === -1) currentImageIndex = 0;
+  }
+
   // Обновляем активную миниатюру
+  updateActiveThumbnail(src);
+
+  // Обновляем счетчики
+  updateImageCounter();
+  updateModalImageCounter();
+}
+
+// Обновление активной миниатюры
+function updateActiveThumbnail(src) {
   document.querySelectorAll('.thumbnail-image').forEach(thumb => {
     thumb.classList.remove('active');
     if (thumb.src === src || thumb.dataset.image === src) {
@@ -355,16 +409,203 @@ function changeMainImage(src) {
   });
 }
 
-// Инициализация
-document.addEventListener('DOMContentLoaded', function() {
-  const mainImage = document.getElementById('mainCarImage');
-  const modalImage = document.getElementById('modalImage');
+// Навигация к следующему изображению
+function nextImage() {
+  if (galleryImages.length === 0) return;
 
-  if (mainImage && modalImage) {
-    mainImage.addEventListener('click', function() {
-      modalImage.src = this.src;
+  currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+  changeMainImage(galleryImages[currentImageIndex], false);
+}
+
+// Навигация к предыдущему изображению
+function prevImage() {
+  if (galleryImages.length === 0) return;
+
+  currentImageIndex = currentImageIndex === 0 ? galleryImages.length - 1 : currentImageIndex - 1;
+  changeMainImage(galleryImages[currentImageIndex], false);
+}
+
+// Обновление счетчика изображений
+function updateImageCounter() {
+  const currentSpan = document.getElementById('currentImageIndex');
+  const totalSpan = document.getElementById('totalImages');
+
+  if (currentSpan && totalSpan) {
+    currentSpan.textContent = currentImageIndex + 1;
+    totalSpan.textContent = galleryImages.length;
+  }
+}
+
+// Обновление счетчика в модальном окне
+function updateModalImageCounter() {
+  const modalCurrentSpan = document.getElementById('modalCurrentImageIndex');
+  const modalTotalSpan = document.getElementById('modalTotalImages');
+
+  if (modalCurrentSpan && modalTotalSpan) {
+    modalCurrentSpan.textContent = currentImageIndex + 1;
+    modalTotalSpan.textContent = galleryImages.length;
+  }
+}
+
+// Настройка стрелок навигации
+function setupNavigationArrows() {
+  const prevBtn = document.getElementById('prevImageBtn');
+  const nextBtn = document.getElementById('nextImageBtn');
+  const modalPrevBtn = document.getElementById('modalPrevBtn');
+  const modalNextBtn = document.getElementById('modalNextBtn');
+
+  if (prevBtn) {
+    prevBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      prevImage();
     });
   }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      nextImage();
+    });
+  }
+
+  if (modalPrevBtn) {
+    modalPrevBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      prevImage();
+    });
+  }
+
+  if (modalNextBtn) {
+    modalNextBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      nextImage();
+    });
+  }
+}
+
+// Настройка клавиатурной навигации
+function setupKeyboardNavigation() {
+  document.addEventListener('keydown', (e) => {
+    // Проверяем, что мы на странице автомобиля и не в поле ввода
+    const isCarPage = document.querySelector('.car-single-page');
+    const isInputFocused = document.activeElement &&
+                          (document.activeElement.tagName === 'INPUT' ||
+                           document.activeElement.tagName === 'TEXTAREA' ||
+                           document.activeElement.isContentEditable);
+
+    if (!isCarPage || isInputFocused) {
+      return;
+    }
+
+    switch(e.key) {
+      case 'ArrowLeft':
+        e.preventDefault();
+        prevImage();
+        break;
+      case 'ArrowRight':
+        e.preventDefault();
+        nextImage();
+        break;
+      case 'Escape':
+        if (isModalOpen) {
+          e.preventDefault();
+          closeModal();
+        }
+        break;
+    }
+  });
+}
+
+// Настройка touch-событий для мобильных
+function setupTouchNavigation() {
+  const mainImageContainer = document.querySelector('.main-image-container');
+  const modalBody = document.querySelector('#imageModal .modal-body');
+
+  if (mainImageContainer) {
+    setupTouchEvents(mainImageContainer);
+  }
+
+  if (modalBody) {
+    setupTouchEvents(modalBody);
+  }
+}
+
+// Добавление touch-событий к элементу
+function setupTouchEvents(element) {
+  let startX = 0;
+  let startY = 0;
+  let threshold = 50; // Минимальное расстояние для свайпа
+
+  element.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+
+  element.addEventListener('touchend', (e) => {
+    if (!startX || !startY) return;
+
+    const endX = e.changedTouches[0].clientX;
+    const endY = e.changedTouches[0].clientY;
+
+    const diffX = startX - endX;
+    const diffY = startY - endY;
+
+    // Проверяем, что это горизонтальный свайп
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > threshold) {
+      if (diffX > 0) {
+        // Свайп влево - следующее изображение
+        nextImage();
+      } else {
+        // Свайп вправо - предыдущее изображение
+        prevImage();
+      }
+    }
+
+    startX = 0;
+    startY = 0;
+  }, { passive: true });
+}
+
+// Настройка обработчиков модального окна
+function setupModalHandlers() {
+  const modal = document.getElementById('imageModal');
+  const mainImage = document.getElementById('mainCarImage');
+
+  if (modal && mainImage) {
+    // Открытие модального окна
+    mainImage.addEventListener('click', () => {
+      const modalImage = document.getElementById('modalImage');
+      if (modalImage) {
+        modalImage.src = mainImage.src;
+      }
+    });
+
+    // Отслеживание состояния модального окна
+    modal.addEventListener('shown.bs.modal', () => {
+      isModalOpen = true;
+    });
+
+    modal.addEventListener('hidden.bs.modal', () => {
+      isModalOpen = false;
+    });
+  }
+}
+
+// Закрытие модального окна
+function closeModal() {
+  const modal = document.getElementById('imageModal');
+  if (modal) {
+    const bsModal = bootstrap.Modal.getInstance(modal);
+    if (bsModal) {
+      bsModal.hide();
+    }
+  }
+}
+
+// Инициализация при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+  // Инициализируем галерею изображений
+  initImageGallery();
 
   // Первая миниатюра активная
   const firstThumbnail = document.querySelector('.thumbnail-image');
