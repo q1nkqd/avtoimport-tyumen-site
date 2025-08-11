@@ -1,7 +1,7 @@
 ---
 title: "Отзыв Никита Новосёлов"
 name: "Никита Новосёлов"
-photo: "/images/stepwgn-2021.jpg"
+photo: "\static\images.jpg"
 date: 2025-07-24
 ---
 Всех приветствую,
